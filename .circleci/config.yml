@@ -4,6 +4,6 @@ orbs:
    hello: circleci/hello-build@volatile
 
 workflows:
-    "Hello-world Workflow":
+    "Hello Workflow":
         jobs:
-          - hello-world/hello-world-build
+          - hello/hello-build
