@@ -7,6 +7,6 @@ usage:
     hello-build: circleci/hello-world-build@0.0.9
 
   workflows:
-    "Hello-world Workflow":
+    "Hello Workflow":
         jobs:
           - hello-build/hello-world-build
