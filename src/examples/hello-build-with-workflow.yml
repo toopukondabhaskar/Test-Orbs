@@ -9,4 +9,4 @@ usage:
   workflows:
     "Hello Workflow":
         jobs:
-          - hello-build/hello-world-build
+          - hello-build/hello-build
