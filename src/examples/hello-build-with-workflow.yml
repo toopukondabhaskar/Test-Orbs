@@ -1,0 +1,12 @@
+description: |
+  Invoke and run the hello-build orb.
+usage:
+  version: 2.1
+
+  orbs:
+    hello-world-build: circleci/hello-world-build@0.0.9
+
+  workflows:
+    "Hello Workflow":
+        jobs:
+- hello-world-build/hello-world-build

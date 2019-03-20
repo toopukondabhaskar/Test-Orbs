@@ -1,0 +1,21 @@
+version: 2.1
+
+description: |
+  A simple "Hello, World demo!" orb
+executors:
+  default:
+    docker:
+      - image:  bash:4.4.19
+
+jobs:
+  hello-world-build:
+    parameters:
+      to:
+        type: string
+        default: "${CIRCLE_USERNAME}"
+    executor: default
+    steps:
+      - hello-world-triggerer:
+          to: <<parameters.to>>
+      - circleci-env-highlights
+      - system-info
