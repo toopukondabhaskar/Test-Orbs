@@ -4,9 +4,9 @@ usage:
   version: 2.1
 
   orbs:
-    hello-world-build: circleci/hello-world-build@0.0.9
+    hello-build: circleci/hello-world-build@0.0.9
 
   workflows:
     "Hello-world Workflow":
         jobs:
-          - hello-world-build/hello-world-build
+          - hello-build/hello-world-build
