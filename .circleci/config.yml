@@ -1,9 +1,21 @@
+#version: 2.1
+
+#orbs:
+   #hello: circleci/hello-build@volatile
+
+#workflows:
+    #"Hello Workflow":
+        #jobs:
+          #- hello/hello-build
+
 version: 2.1
 
-orbs:
-   hello: circleci/hello-build@volatile
-
-workflows:
-    "Hello Workflow":
-        jobs:
-          - hello/hello-build
+commands:
+  sayhello:
+    description: "A very simple command for demonstration purposes"
+    parameters:
+      to:
+        type: string
+        default: "Hello World"
+    steps:
+      - run: echo << parameters.to >>
