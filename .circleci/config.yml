@@ -1,21 +1,103 @@
-#version: 2.1
-
-#orbs:
-   #hello: circleci/hello-build@volatile
-
-#workflows:
-    #"Hello Workflow":
-        #jobs:
-          #- hello/hello-build
-
 version: 2.1
 
+description: Deploy applications to Convox https://convox.com
+
+examples:
+
+  deploy:
+    description: Deploy your application to Convox using the jobs from this orb
+    usage:
+      version: 2.1
+      orbs:
+        convox: convox/orb@1.4.1
+      workflows:
+        deploy:
+          jobs:
+            - checkout
+            - convox/deploy:
+                rack: production
+                app: example
+
+  test_and_deploy:
+    description: Customize your workflow using the commands from this orb
+    usage:
+      version: 2.1
+      orbs:
+        convox: convox/orb@1.4.1
+      workflows:
+        deploy:
+          jobs:
+            - deploy
+      jobs:
+        deploy:
+          executor: convox/cli
+          steps:
+            - checkout
+            - run: make test
+            - convox/deploy:
+                rack: production
+                app: example
+
+executors:
+  cli:
+    description: Convox CLI
+    docker:
+      - image: convox/circleci
+    working_directory: ~/convox
+
 commands:
-  sayhello:
-    description: "A very simple command for demonstration purposes"
+  deploy:
     parameters:
-      to:
+      deploy-key:
+        description: Deploy Key - https://docs.convox.com/console/deploy-keys
         type: string
-        default: "Hello World"
+        default: "$CONVOX_DEPLOY_KEY"
+      app:
+        description: Application Name
+        type: string
+        default: "$CIRCLE_PROJECT_REPONAME"
+      rack:
+        description: Rack Name
+        type: string
+        default: "$CONVOX_RACK"
+      host:
+        description: Console Hostname
+        type: string
+        default: "console.convox.com"
     steps:
-      - run: echo << parameters.to >>
+      - run: mkdir -p workspace
+      - run:
+          name: Deploy Application
+          environment:
+            CONVOX_PASSWORD: << parameters.deploy-key >>
+            CONVOX_HOST: << parameters.host >>
+            CONVOX_RACK: << parameters.rack >>
+          command: convox deploy --app << parameters.app >>
+
+jobs:
+  deploy:
+    parameters:
+      deploy-key:
+        description: Deploy Key - https://docs.convox.com/console/deploy-keys
+        type: string
+        default: "$CONVOX_DEPLOY_KEY"
+      app:
+        description: Application Name
+        type: string
+        default: "$CIRCLE_PROJECT_REPONAME"
+      rack:
+        description: Rack Name
+        type: string
+        default: "$CONVOX_RACK"
+      host:
+        description: Console Hostname
+        type: string
+        default: "console.convox.com"
+    executor: cli
+    steps:
+      - checkout
+      - deploy:
+          deploy-key: << parameters.deploy-key >>
+          app: << parameters.app >>
+          rack: << parameters.rack >>
+          host: << parameters.host >>
